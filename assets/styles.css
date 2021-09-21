@@ -1,0 +1,127 @@
+/**
+@name: styles.css
+@brief: css styling for the entire app
+**/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Grey+Qo&display=swap');
+
+.bg-image{
+    opacity: 0.4;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    position: fixed;
+}
+
+.mainWrapper{
+    overflow: scroll;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.content-wrapper{
+    position: relative;
+}
+
+.row{
+    display: flex;
+}
+
+.column{
+    flex: 50%;
+    padding: 10px;
+    height: 500px;
+    border-style: groove;
+}
+
+h1{
+    width: 100%;
+    font-size: 40px;
+    color: purple;
+    text-decoration: underline;
+}
+
+*{
+    font-family: 'Grey Qo', cursive;
+}
+
+#pie-chart{
+    height: 350px;
+    width: 350px;
+    margin-left: 200px;
+}
+
+#dropdown-reviews{
+    font-size: 25px;
+    font-weight: bold;
+    width: 350;
+    height: 80px;
+}
+
+#dropdown-review-head{
+    font-weight: bold;
+}
+
+#button-dropdown{
+    width: 300px;
+    height: 40px;
+    font-size: 25px;
+    color: gray;
+    background-color: lightpink;
+    font-weight: bold;
+}
+
+#negative{
+    margin-top: 30px;
+    font-size: 25px;
+    border-radius: 25px;
+    background: red;
+    padding: 10px;
+    width: 200px;
+    height: 40px;
+    color: white;
+    margin-left: 240px;
+}
+
+#positive{
+    margin-top: 30px;
+    font-size: 25px;
+    border-radius: 25px;
+    background: #73AD21;
+    padding: 10px;
+    width: 200px;
+    height: 40px;
+    color: white;
+    margin-left: 240px;
+}
+
+#unknown{
+    margin-top: 30px;
+    font-size: 25px;
+    border-radius: 25px;
+    background: gray;
+    padding: 10px;
+    width: 200px;
+    height: 40px;
+    color: white;
+    margin-left: 240px;
+}
+
+#text-review{
+    width: 600px;
+    font-weight: bold;
+    height: 100px;
+    font-size: 25px;
+}
