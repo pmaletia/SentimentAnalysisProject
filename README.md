@@ -20,6 +20,9 @@ have some data to show the results on ui.
 
 This UI has 4 parts:
 a) The pie chart showing how many reviews that we extracted from "https://www.etsy.com/" are positive or negative.
+  
 b) The most frequently used words in the comment section.
+  
 c) A dropdown with randomly chosen 100 comments that we can click and check if that comment is positive or negative.
+  
 d) A textbox which in realtime will give us a positive or negative depending on what we write in the textbox.
