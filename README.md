@@ -19,6 +19,7 @@ have some data to show the results on ui.
 ------------------------------------------------------------------------------------------------------------------
 
 This UI has 4 parts:
+
 a) The pie chart showing how many reviews that we extracted from "https://www.etsy.com/" are positive or negative.
   
 b) The most frequently used words in the comment section.
