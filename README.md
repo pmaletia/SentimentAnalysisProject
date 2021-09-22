@@ -27,3 +27,6 @@ b) The most frequently used words in the comment section.
 c) A dropdown with randomly chosen 100 comments that we can click and check if that comment is positive or negative.
   
 d) A textbox which in realtime will give us a positive or negative depending on what we write in the textbox.
+
+--------------------------------------------------------------------------------------------------------------------
+The model used here was also created by me. The code for that is also available in app_funcs.py and the data was collected from https://nijianmo.github.io/amazon/index.html, where I used the data under "Clothes, shoes and jewellery" section from year 2018. 
