@@ -20,13 +20,17 @@ from selenium.webdriver.firefox.options import Options as Options1
 from nltk.corpus import stopwords
 import nltk
 from nltk.stem.porter import PorterStemmer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import train_test_split
 
 # python inbuilt packages
 import pickle
-from os import getcwd, sep
+from os import getcwd, sep, mkdir
 from time import sleep
 import re
 import base64
+from glob import glob
 
 
 # defining functions directly used in app at runtime
@@ -51,6 +55,7 @@ def get_review_result(review: str):
     """
     @name: get_review_result
     @brief: Calculates if the result is positive(1) or negative(0)
+    @param: review: review you wanna calculate the class(positive and negative) of.
     @return: 1 or 0
     """
     model, vocab = load_model_vocab()
@@ -86,6 +91,7 @@ def unpickle_file(filepath):
     """
     @name: unpickle_file
     @brief: unpickle any file and provides the original object
+    @filepath: path to the pickle file
     @return: object of any kind
     """
     file = open(filepath, 'rb')
@@ -191,16 +197,22 @@ def get_app_layout():
 # -------------------------------------------------------------------------------------------------------
 
 # extra functions - to be run in run_extra.py before running the main apptp get some data
-def etsy_data_scrapper(headless: bool, browserType: str):
+def etsy_data_scrapper(headless: bool, browserType: str, startPage: int, endPage: int):
     """
     @name: etsy_data_scrapper
     @brief: scrap reviews and create csv of scrapped reviews
+    @param: headless: Give values True or False to tell if want to run the scrapping in headless 
+    mode or not
+    @param: browserType: give the type of browser you wanna run the scrapping in. Allowed values -> 'chrome',
+    'firefox' (case insensitive)
+    @param: startPage: give the page from where to start extracting data for the products
+    @para: endPage: give the page from where to stop extracting data for the products
     """
 
     df = pd.DataFrame(columns=["review"])
 
     # loop to run it for each page having products. Mention the range of pages in the loop range
-    for i in range(1, 250):
+    for i in range(startPage, endPage+1):
         if browserType.lower()=="chrome":
             # set options for chrome browser
             options = Options()
@@ -279,6 +291,7 @@ def get_reviews_dataFrame(filepath: str):
     """
     @name: get_reviews_dataFrame
     @brief: creates the dataframe for the reviews provided and returns it
+    @param: filepath: path to csv file
     @return: dataframe for reviews
     """
     df = pd.read_csv(filepath)
@@ -329,4 +342,111 @@ def create_etsy_vocab():
     vect = TfidfVectorizer(min_df=5).fit(corpus)
     vocab = vect.vocabulary_
     file = open(WORKING_DIR + sep + "assets" + sep + "etsy_vocab.pkl", "wb")
+    pickle.dump(vocab,file)
+
+
+def clean_amazon_data(filepath: str):
+    """
+    @name: clean_amazon_data
+    @brief: cleans amazon reviews data got from https://nijianmo.github.io/amazon/index.html
+    @param: filepath: path to the untar data file.
+    """
+    # increase/decrease chunksize based on your computer's resources. Also untar the data fileafter downloading.
+    df_reader = pd.read_json(filepath, lines=True, chunksize=1000000)
+
+    mkdir(WORKING_DIR + sep + "assets" + sep + "csv_files")
+    
+    #for loop
+    counter = 1
+    for chunk in df_reader:
+        # getting data of just three categories - overall, review, summary
+        new_df = pd.DataFrame(chunk[['overall', 'reviewText', 'summary']])
+        new_df1 = new_df[new_df['overall']==1].sample(4000)
+        new_df2 = new_df[new_df['overall']==2].sample(4000)
+        new_df4 = new_df[new_df['overall']==4].sample(4000)
+        new_df5 = new_df[new_df['overall']==5].sample(4000)
+        new_df3 = new_df[new_df['overall']==3].sample(8000)
+        
+        # concat all the data of different rating
+        new_df_concat = pd.concat([new_df1, new_df2, new_df3, new_df4, new_df5], 
+                                ignore_index=True)
+        new_df_concat.to_csv(WORKING_DIR + sep + "assets" + sep + "csv_files/"+str(counter)+".csv", index=False)
+        print(str(counter)+" iteration complete!")
+        counter=counter+1
+
+    # getting all the csv's made so far
+    filenames = glob(WORKING_DIR + sep + "assets" + sep + "csv_files/*.csv")
+
+    dataframes = []
+
+    for f in filenames:
+        dataframes.append(pd.read_csv(f))
+        
+    # creating final dataframe and csv with balanced reviews
+    final_dataframe = pd.concat(dataframes, axis=0, ignore_index=True)
+    final_dataframe.to_csv(WORKING_DIR + sep + "assets" + sep + "csv_files/balanced_reviews.csv", index=False)
+
+
+def create_model():
+    """
+    @name: create_model
+    @brief: create the model that will finally check if the review is negative or positive
+    """
+    dataset = pd.read_csv(WORKING_DIR + sep + "assets" + sep + "csv_files/balanced_reviews.csv")
+
+    # EDA
+    print(dataset.shape)
+    print(dataset.columns)
+    print(dataset.dtypes)
+
+    # null value check 
+    print(dataset.isnull().any(axis=0).value_counts())
+    print(dataset["overall"].value_counts())
+
+    # because text value can't be filled with anything, we drop all the null values
+    dataset = dataset.dropna() 
+    dataset["overall"].value_counts()
+
+    # now because we want just good and bad, we remove the neutral data
+    dataset = dataset[dataset["overall"] != 3]
+    dataset["overall"].value_counts()
+
+    # now we want to do binary classification but we have like 4 data points right
+    # now. So we can change the original 1, 2, 3, 4 to 1 and 0, but it's better we
+    # do a new column. this data persist and we get binary classification as well
+
+    dataset["Positivity"] = np.where(dataset["overall"]>3,1,0)
+
+    # features - reviewText
+    # labels - Positivity
+    features = dataset["reviewText"]
+    labels = dataset["Positivity"]
+
+    # now to train model, we need to work with text data and that needs NLP
+    # train test split
+    features_train, features_test, labels_train, labels_test = train_test_split(
+                                features, labels, train_size=0.8, random_state=1)
+
+    # vectorization through tfidf
+    vect = TfidfVectorizer(min_df=5).fit(features_train)
+
+    features_train_vectorized = vect.transform(features_train)
+
+    # model creation
+    model = LogisticRegression()
+    model.fit(features_train_vectorized, labels_train)
+
+    predictions = model.predict(vect.transform(features_test))
+
+    # accuracy scores and confusion matrix
+    accuracy_score(labels_test, predictions)
+
+    #confusion_matrix(labels_test, predictions)
+
+    vocab = vect.vocabulary_
+
+    file = open(WORKING_DIR + sep + "assets" + sep + "project_model.pkl", "wb")
+    pickle.dump(model,file)
+
+    file = open(WORKING_DIR + sep + "assets" + sep + "project_vocab.pkl", "wb")
     pickle.dump(vocab,file)

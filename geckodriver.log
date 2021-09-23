@@ -20483,8 +20483,9 @@ JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
 console.log: WebExtensions: reset-default-search: starting.
 console.log: WebExtensions: reset-default-search: No addons in our list are installed.
 JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
-nd" "-no-remote" "-profile" "C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofile3l2750"
-*** You are running in headless mode.
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+running in headless mode.
 1632066951101	Marionette	INFO	Marionette enabled
 [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
 console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofile3l2750\\search.json.mozlz4", (void 0)))
@@ -20495,8 +20496,9 @@ JavaScript warning: https://www.etsy.com/ac/evergreen/js/en-GB/base.f28f25b1438f
 console.log: WebExtensions: reset-default-search: starting.
 console.log: WebExtensions: reset-default-search: No addons in our list are installed.
 JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
-nd" "-no-remote" "-profile" "C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofilepnATMh"
-*** You are running in headless mode.
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+running in headless mode.
 1632067390036	Marionette	INFO	Marionette enabled
 [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
 console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofilepnATMh\\search.json.mozlz4", (void 0)))
@@ -25289,3 +25291,18 @@ JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILU
 
 ###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
+1632219791522	geckodriver	INFO	Listening on 127.0.0.1:56301
+1632219794452	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofileTlP434"
+*** You are running in headless mode.
+1632219795103	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\pmale\\AppData\\Local\\Temp\\rust_mozprofileTlP434\\search.json.mozlz4", (void 0)))
+1632219796641	Marionette	INFO	Listening on port 65296
+1632219797216	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://www.etsy.com/ac/primary/js/en-GB/base.a192f665530b47b4531d.js, line 2: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.etsy.com/ac/primary/js/en-GB/base.a192f665530b47b4531d.js, line 2: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.etsy.com/ac/primary/js/en-GB/base.a192f665530b47b4531d.js, line 2: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.log: WebExtensions: reset-default-search: starting.
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE

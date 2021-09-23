@@ -100,7 +100,7 @@ def main():
     """
     app.title = PROJECT_NAME
     app.layout = get_app_layout()
-    app.run_server(debug=False)
+    app.run_server(debug=False, host='0.0.0.0', port=8050)
     
 
 if __name__ == "__main__":
