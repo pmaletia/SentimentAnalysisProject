@@ -1,6 +1,7 @@
 """
 @name: run_extra.py
 @brief: run before running the main app. Will give you data for the app
+@author: Priyanka Maletia
 """
 
 # import from files

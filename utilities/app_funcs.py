@@ -69,7 +69,7 @@ def get_review_result(review: str):
     # guess by model
     guess = model.predict(review_transformed)
     
-    return guess[0]
+    return guess
 
 def create_pie_chart():
     """
@@ -196,7 +196,7 @@ def get_app_layout():
 
 # -------------------------------------------------------------------------------------------------------
 
-# extra functions - to be run in run_extra.py before running the main apptp get some data
+# extra functions - to be run in run_extra.py before running the main app to get some data
 def etsy_data_scrapper(headless: bool, browserType: str, startPage: int, endPage: int):
     """
     @name: etsy_data_scrapper
@@ -225,6 +225,8 @@ def etsy_data_scrapper(headless: bool, browserType: str, startPage: int, endPage
             options.headless = headless
             # open the browser
             browser = webdriver.Firefox(executable_path=WORKING_DIR + sep + "assets" + sep + "geckodriver.exe", firefox_options=options)
+        else:
+            raise ValueError("This browser type is not yet supported by the application. Sorry for the inconvinience!")
         sleep(3)
 
         # navigate to url
@@ -284,7 +286,7 @@ def etsy_data_scrapper(headless: bool, browserType: str, startPage: int, endPage
             browser.close()
     
     # storing reviews in assets/etsy_reviews1.csv
-    df.to_csv(WORKING_DIR + sep + "assets" + sep + "etsy_reviews1.csv", index=False)
+    df.to_csv(WORKING_DIR + sep + "assets" + sep + "etsy_reviews.csv", index=False)
 
 
 def get_reviews_dataFrame(filepath: str):
@@ -312,6 +314,7 @@ def create_etsy_vocab():
     """
     @name: create_etsy_vocab
     @brief: create etsy vocab and save it as pickle file
+    @author: Priyanka Maletia
     """
     df = get_reviews_dataFrame(WORKING_DIR + sep + "assets" + sep + "etsy_reviews.csv")
 
@@ -384,15 +387,16 @@ def clean_amazon_data(filepath: str):
         
     # creating final dataframe and csv with balanced reviews
     final_dataframe = pd.concat(dataframes, axis=0, ignore_index=True)
-    final_dataframe.to_csv(WORKING_DIR + sep + "assets" + sep + "csv_files/balanced_reviews.csv", index=False)
+    final_dataframe.to_csv(WORKING_DIR + sep + "assets" + sep + "balanced_reviews.csv", index=False)
 
 
 def create_model():
     """
     @name: create_model
     @brief: create the model that will finally check if the review is negative or positive
+    @author: Priyanka Maletia
     """
-    dataset = pd.read_csv(WORKING_DIR + sep + "assets" + sep + "csv_files/balanced_reviews.csv")
+    dataset = pd.read_csv(WORKING_DIR + sep + "assets" + sep + "balanced_reviews.csv")
 
     # EDA
     print(dataset.shape)
@@ -417,12 +421,32 @@ def create_model():
 
     dataset["Positivity"] = np.where(dataset["overall"]>3,1,0)
 
+    #data cleaning
+    nltk.download('stopwords')
+    corpus = []
+    for i in range(dataset["reviewText"].shape[0]):
+        if i == 0:  
+            print(dataset.iloc[i,1])
+        review = re.sub("[^a-zA-Z]", " ", dataset.iloc[i,1])
+        review = review.lower()
+        review = review.split()
+        review = [word for word in review if word not in 
+                        stopwords.words('english')]
+        ps = PorterStemmer()
+        review = [ps.stem(m) for m in review]
+        review = " ".join(review)
+        #print(review)
+        corpus.append(review)
+
+    # create text file with vocab
+    data = " ".join(corpus)
+    dataset["reviewText"] = corpus
+
     # features - reviewText
     # labels - Positivity
     features = dataset["reviewText"]
     labels = dataset["Positivity"]
 
-    # now to train model, we need to work with text data and that needs NLP
     # train test split
     features_train, features_test, labels_train, labels_test = train_test_split(
                                 features, labels, train_size=0.8, random_state=1)
@@ -439,7 +463,7 @@ def create_model():
     predictions = model.predict(vect.transform(features_test))
 
     # accuracy scores and confusion matrix
-    accuracy_score(labels_test, predictions)
+    print(accuracy_score(labels_test, predictions))
 
     #confusion_matrix(labels_test, predictions)
 

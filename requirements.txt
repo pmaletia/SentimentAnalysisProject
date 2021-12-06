@@ -3,3 +3,6 @@ selenium==3.141.0
 pandas==1.2.4
 sklearn==0.24.2
 wordcloud==1.8.1
+numpy
+nltk
+plotly==5.3.1
